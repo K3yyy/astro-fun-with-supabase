@@ -1,17 +1,17 @@
-
+import { createClient } from "@/lib/supabase/server";
 import { Suspense } from "react";
-import InstrumentsData from "@/components/component/InstrumentsData";
 
-export default function InstrumentsPage() {
-    return (
-        <>
-            <h1>Instruments</h1>
-            <Suspense fallback={<div>Loading instruments...</div>}>
-                <InstrumentsData />
-            </Suspense>
-        </>
-    );
+async function InstrumentsData() {
+    const supabase = await createClient();
+    const { data: instruments } = await supabase.from("instruments").select();
+
+    return <pre>{JSON.stringify(instruments, null, 2)}</pre>;
 }
 
-// Remove this line entirely when cacheComponents is enabled
-// export const dynamic = "force-static";
+export default function Instruments() {
+    return (
+        <Suspense fallback={<div>Loading instruments...</div>}>
+            <InstrumentsData />
+        </Suspense>
+    );
+}
